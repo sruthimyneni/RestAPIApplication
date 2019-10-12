@@ -1,53 +1,64 @@
 package com.example.demo.controller;
 
 import java.io.IOException;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.example.demo.constants.FileManagementConstants;
-import com.example.demo.utility.FilesCheckSum;
+import com.example.demo.service.FileManagementService;
 
 @Controller
 @RequestMapping("/testApplicationContext")
 public class FileManagementController {
 
-	@RequestMapping(value = "/uploadData/{key}")
+	@Autowired
+	FileManagementService fileManagementService;
+
+	@RequestMapping(value = "/uploadData/{key}", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	public ResponseEntity<String> uploadData(@PathVariable("key") String key,
-			@RequestHeader("checksum-type") String checksumType) throws NoSuchAlgorithmException, IOException {
+			@RequestHeader("checksum-type") String checksumType, @RequestParam("file") MultipartFile file)
+			throws NoSuchAlgorithmException, IOException {
 
 		HttpHeaders responseHeader = new HttpHeaders();
-		MessageDigest messageDigest = null;
-		String checkSum = "", filePath = "";
+		String checkSum = "";
 
-		// Setting the instance to MD5/SHA256
-		if (checksumType.equals(FileManagementConstants.MD5)) {
-			messageDigest = MessageDigest.getInstance(FileManagementConstants.MD5);
-		} else if (checksumType.equals(FileManagementConstants.SHA256)) {
-			messageDigest = MessageDigest.getInstance(FileManagementConstants.SHA256);
+		if (!key.isEmpty() && key.equals(FileManagementConstants.KEY)) {
+			String filePath = FileManagementConstants.LOCAL_FILE_PATH.concat(file.getOriginalFilename());
+			
+			fileManagementService.uploadFile(filePath, file);
+			checkSum = fileManagementService.calculateCheckSum(checksumType, filePath);
+		}else {
+			return ResponseEntity.notFound().build();
 		}
-
-		// Calculating checksum of the uploaded file
-		checkSum = FilesCheckSum.calculateCheckSum(filePath, messageDigest);
-
-		// Add code for file upload
-
+		
 		responseHeader.set("checksum", checkSum);
 		return ResponseEntity.ok().headers(responseHeader).body("File uploaded successfully");
 	}
 
-	@RequestMapping(value = "downloadData/{key}")
-	public ResponseEntity<String> downloadData(@PathVariable("key") String key, String fileName) {
+	@RequestMapping(value = "downloadData/{key}", method = RequestMethod.GET)
+	public ResponseEntity<String> downloadData(@PathVariable("key") String key, @RequestParam String fileName, HttpServletResponse httpServletResponse) throws IOException {
 
+		String filePath = FileManagementConstants.LOCAL_FILE_PATH.concat(fileName);
 		if (key.isEmpty()) {
 			return ResponseEntity.notFound().build();
+		}else if(!key.equals(FileManagementConstants.KEY)) {
+			return ResponseEntity.badRequest().body(FileManagementConstants.WRONG_KEY_400);
 		}
+		
+		fileManagementService.downloadFile(filePath, httpServletResponse);
 
 		// Add code for download
 
