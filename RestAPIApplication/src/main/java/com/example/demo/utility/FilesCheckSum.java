@@ -10,8 +10,7 @@ public class FilesCheckSum {
 	public static String calculateCheckSum(String filePath, MessageDigest messageDigest) throws IOException {
 		try (DigestInputStream digestInputStream = new DigestInputStream(new FileInputStream(filePath),
 				messageDigest)) {
-			while (digestInputStream.read() != -1)
-				; // empty loop to clear the data
+			while (digestInputStream.read() != -1); 
 			messageDigest = digestInputStream.getMessageDigest();
 		}
 
