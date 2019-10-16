@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results skipped="0" failed="0" ignored="0" total="8" passed="8">
+  <reporter-output>
+  </reporter-output>
+  <suite name="Surefire suite" duration-ms="8632" started-at="2019-10-16T00:01:08 CDT" finished-at="2019-10-16T00:01:17 CDT">
+    <groups>
+    </groups>
+    <test name="Surefire test" duration-ms="8632" started-at="2019-10-16T00:01:08 CDT" finished-at="2019-10-16T00:01:17 CDT">
+      <class name="com.example.demo.RestApiApplicationTests">
+        <test-method status="PASS" signature="test1uploadTestWhenKeyIsGivenMD5()" name="test1uploadTestWhenKeyIsGivenMD5" duration-ms="7317" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:16 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test1uploadTestWhenKeyIsGivenMD5 -->
+        <test-method status="PASS" signature="test2uploadTestWhenKeyIsNotPresentMD5()" name="test2uploadTestWhenKeyIsNotPresentMD5" duration-ms="7464" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:17 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test2uploadTestWhenKeyIsNotPresentMD5 -->
+        <test-method status="PASS" signature="test3uploadTestWhenKeyIsGivenSHA256()" name="test3uploadTestWhenKeyIsGivenSHA256" duration-ms="7527" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:17 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test3uploadTestWhenKeyIsGivenSHA256 -->
+        <test-method status="PASS" signature="test5downloadDataWithFileKey()" name="test5downloadDataWithFileKey" duration-ms="7645" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:17 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test5downloadDataWithFileKey -->
+        <test-method status="PASS" signature="test4uploadTestWhenKeyIsNotPresentSHA256()" name="test4uploadTestWhenKeyIsNotPresentSHA256" duration-ms="7578" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:17 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test4uploadTestWhenKeyIsNotPresentSHA256 -->
+        <test-method status="PASS" signature="test6downloadDataWithoutKey()" name="test6downloadDataWithoutKey" duration-ms="7692" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:17 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test6downloadDataWithoutKey -->
+        <test-method status="PASS" signature="test7removeDataWithKey()" name="test7removeDataWithKey" duration-ms="7732" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:17 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test7removeDataWithKey -->
+        <test-method status="PASS" signature="test8removeDataWithoutKey()" name="test8removeDataWithoutKey" duration-ms="7778" started-at="2019-10-16T00:01:09 CDT" finished-at="2019-10-16T00:01:17 CDT">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- test8removeDataWithoutKey -->
+      </class> <!-- com.example.demo.RestApiApplicationTests -->
+    </test> <!-- Surefire test -->
+  </suite> <!-- Surefire suite -->
+</testng-results>
