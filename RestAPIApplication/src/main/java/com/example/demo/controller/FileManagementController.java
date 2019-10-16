@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -40,10 +41,13 @@ public class FileManagementController {
 			checkSum = fileManagementService.calculateCheckSum(checksumType, filePath);
 			fileManagementService.storeCheckSumInFile(filePath, checkSum, checksumType);
 		} else {
-			return ResponseEntity.notFound().build();
+			return ResponseEntity.badRequest()
+					.header(FileManagementConstants.STATUS_RESPONSE_HEADER, HttpStatus.BAD_REQUEST.toString())
+					.body("Enter correct key");
 		}
 
-		responseHeader.set("checksum", checkSum);
+		responseHeader.set(FileManagementConstants.CHECKSUM_RESPONSE_HEADER, checkSum);
+		responseHeader.set(FileManagementConstants.STATUS_RESPONSE_HEADER, HttpStatus.OK.toString());
 		return ResponseEntity.ok().headers(responseHeader).body("File uploaded successfully");
 	}
 
@@ -53,7 +57,9 @@ public class FileManagementController {
 
 		String filePath = FileManagementConstants.LOCAL_FILE_PATH.concat(fileName);
 
-		fileManagementService.downloadFile(filePath, key, httpServletResponse);
+		if (!key.isEmpty() && key.equals(FileManagementConstants.KEY)) {
+			fileManagementService.downloadFile(filePath, key, httpServletResponse);
+		}
 	}
 
 	@RequestMapping(value = "removeData/{key}", method = RequestMethod.GET)
@@ -72,6 +78,7 @@ public class FileManagementController {
 		Checksum checksum = fileManagementService.retrieveCheckSumOfAFile(filePath);
 
 		responseHeader.set("checksum", checksum.getChecksum());
+		responseHeader.set(FileManagementConstants.STATUS_RESPONSE_HEADER, HttpStatus.OK.toString());
 		return ResponseEntity.ok().headers(responseHeader).body("Data is deleted from the given file");
 	}
 

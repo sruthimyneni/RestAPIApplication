@@ -14,6 +14,7 @@ import java.security.MessageDigest;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -70,8 +71,7 @@ public class FileManagementServiceImpl implements FileManagementService {
 			}
 
 			if (!inputStr.contains(filePath)) {
-				inputStr = inputStr.concat(filePath).concat("+").concat(checkSum).concat("+")
-						.concat(checkSumType);
+				inputStr = inputStr.concat(filePath).concat("+").concat(checkSum).concat("+").concat(checkSumType);
 			}
 
 			FileOutputStream fileOut = new FileOutputStream(FileManagementConstants.CHECKSUM_LOCAL_FILE_PATH);
@@ -119,24 +119,18 @@ public class FileManagementServiceImpl implements FileManagementService {
 	@Override
 	public void downloadFile(String filePath, String key, HttpServletResponse httpServletResponse) throws Exception {
 
-		if (!key.isEmpty() && key.equals(FileManagementConstants.KEY)) {
-			ServletOutputStream out = httpServletResponse.getOutputStream();
-			File resource = new File(filePath);
-			Checksum checksum = retrieveCheckSumOfAFile(filePath);
+		ServletOutputStream out = httpServletResponse.getOutputStream();
+		File resource = new File(filePath);
+		Checksum checksum = retrieveCheckSumOfAFile(filePath);
 
-			if (resource.exists()) {
-				byte[] data = readFile(filePath);
-				httpServletResponse.setHeader("Content-Disposition",
-						"attachment; filename=\"" + resource.getName() + "\"");
-				httpServletResponse.setHeader("checksum", checksum.getChecksum());
-				httpServletResponse.setContentLength(data.length);
-				out.write(data);
-				out.flush();
-			}else {
-				httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
-			}
-		} else {
-			httpServletResponse.setStatus(HttpServletResponse.SC_NOT_FOUND);
+		if (resource.exists()) {
+			byte[] data = readFile(filePath);
+			httpServletResponse.setHeader("Content-Disposition", "attachment; filename=\"" + resource.getName() + "\"");
+			httpServletResponse.setHeader("checksum", checksum.getChecksum());
+			httpServletResponse.setHeader(FileManagementConstants.STATUS_RESPONSE_HEADER, HttpStatus.OK.toString());
+			httpServletResponse.setContentLength(data.length);
+			out.write(data);
+			out.flush();
 		}
 	}
 
@@ -147,15 +141,15 @@ public class FileManagementServiceImpl implements FileManagementService {
 		return data;
 	}
 
-	//Removes data from file
+	// Removes data from file
 	@Override
 	public void removeData(String filePath) throws Exception {
-		
+
 		File resource = new File(filePath);
-		if(resource.exists()) {
-		PrintWriter writer = new PrintWriter(resource);
-		writer.close();
-		}else {
+		if (resource.exists()) {
+			PrintWriter writer = new PrintWriter(resource);
+			writer.close();
+		} else {
 			throw new Exception("File doesnot exist");
 		}
 		Checksum checksum = retrieveCheckSumOfAFile(filePath);
